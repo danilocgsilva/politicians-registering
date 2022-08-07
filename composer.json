@@ -16,5 +16,14 @@
             "name": "Danilo Carlos de Góes Silva"
         }
     ],
-    "require": {}
+    "require": {
+        "danilocgsilva/pdo_string_builder": "1.0.1"
+    },
+    "repositories": [
+        { 
+            "name": "danilocgsilva/pdo_string_builder", 
+            "type": "git", 
+            "url": "git@github.com:danilocgsilva/pdo_string_builder.git"
+        }
+    ]
 }
