@@ -15,19 +15,26 @@ class Migrate
         $this->pdo = $pdo;
     }
 
-    public function migrate(): void
+    public function migratePoliticiansTable(): void
     {
-        $resource = $this->pdo->prepare($this->generateMigrateScript()); 
+        $resource = $this->pdo->prepare($this->generateMigratePoliticianScript()); 
         $resource->execute(); 
     }
 
-    public function undoMigrate(): void
+    private function generatePoliticalPartiesScript(): string
+    {
+        return "CREATE TABLE `political_parties` (
+            id INTEGER AUTO_INCREMENT, name VARCHAR(256), PRIMARY KEY (`id`)
+        )";
+    }
+
+    public function undoPoliticiansTableMigrate(): void
     {
         $resource = $this->pdo->prepare($this->generateUndoMigrationScript()); 
         $resource->execute(); 
     }
 
-    private function generateMigrateScript(): string
+    private function generateMigratePoliticianScript(): string
     {
         return "CREATE TABLE `politicians` (
             id INTEGER AUTO_INCREMENT, name VARCHAR(256), PRIMARY KEY (`id`)
@@ -36,6 +43,6 @@ class Migrate
 
     private function generateUndoMigrationScript(): string
     {
-        return "DROP TABLE `politicians`;";
+        return "DROP TABLE `politicians`; DROP TABLE `political_party`;";
     }
 }

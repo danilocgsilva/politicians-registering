@@ -32,12 +32,12 @@ class CRUDTest extends TestCase
 
     public function setUp(): void
     {
-        $this->migrate->migrate();
+        $this->migrate->migratePoliticiansTable();
     }
 
     public function tearDown(): void
     {
-        $this->migrate->undoMigrate();
+        $this->migrate->undoPoliticiansTableMigrate();
     }
 
     public function testCreate()
