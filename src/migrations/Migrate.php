@@ -29,15 +29,13 @@ class Migrate
 
     private function generateMigrateScript(): string
     {
-        return file_get_contents(
-            realpath(__DIR__ . "/migrate.sql")
-        );
+        return "CREATE TABLE `politicians` (
+            id INTEGER AUTO_INCREMENT, name VARCHAR(256), PRIMARY KEY (`id`)
+        );";
     }
 
     private function generateUndoMigrationScript(): string
     {
-        return file_get_contents(
-            realpath(__DIR__ . "/undo_migrate.sql")
-        );
+        return "DROP TABLE `politicians`;";
     }
 }
