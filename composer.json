@@ -11,6 +11,11 @@
             "Educacaopolitica\\PoliticiansRegister\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Educacaopolitica\\PoliticiansRegister\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Danilo Carlos de Góes Silva"

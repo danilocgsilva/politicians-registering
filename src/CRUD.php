@@ -19,18 +19,17 @@ class CRUD
 
     public function create(Politician $politician)
     {
-        $createQuery = sprintf(
-            "INSERT INTO `%s` VALUES \"%s\";", 
-            self::TABLE_NAME, 
-            $politician->getName()
-        );
-        $this->pdo->prepare($createQuery);
-        $this->pdo->execute();
+        $this->pdo
+            ->prepare(
+                sprintf("INSERT INTO %s (name) VALUES (:name);", self::TABLE_NAME)
+            )->execute([
+                ":name" => $politician->getName()
+            ]);
     }
 
     public function read(int $id): Politician
     {
-        $searchQuery = "SELECT name FROM `%s` WHERE id = ?;";
+        $searchQuery = sprintf("SELECT name FROM `%s` WHERE id = ?;", self::TABLE_NAME);
         $resource = $this->pdo->prepare($searchQuery);
         $resource->execute([$id]);
         $result = $resource->fetch();
@@ -41,22 +40,20 @@ class CRUD
 
     public function update(int $id, string $name)
     {
-        $queryUpdate = "UPDATE ? SET name = \"?\" WHERE id = ?;";
-        $this->pdo->prepare($queryUpdate);
-        $this->pdo->execute([
-            self::TABLE_NAME,
-            $name,
-            $id
-        ]);
+        $this->pdo
+            ->prepare(
+                sprintf("UPDATE %s SET name = ? WHERE id = ?;", self::TABLE_NAME)
+            )->execute([
+                $name,
+                $id
+            ]);
     }
 
     public function delete(int $id)
     {
-        $queryDelete = "DELETE FROM ? WHERE id = ?;";
-        $this->pdo->prepare($queryDelete);
-        $this->pdo->execute([
-            self::TABLE_NAME,
-            $id
-        ]);
+        $this->pdo
+            ->prepare(
+                sprintf("DELETE FROM %s WHERE id = ?;", self::TABLE_NAME)
+            )->execute([$id]);
     }
 }

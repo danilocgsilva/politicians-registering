@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
+namespace Educacaopolitica\PoliticiansRegister\Tests\Integration;
+
 use PHPUnit\Framework\TestCase;
-use Danilocgsilva\PdoStringBuilder\Builder;
 use Educacaopolitica\PoliticiansRegister\PoliticianRepository;
+use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
+use PDO;
 use Educacaopolitica\PoliticiansRegister\Migrations\Migrate;
 
 class PoliticianRepositoryTest extends TestCase
 {
+    use DbTrait;
+    
     private PoliticianRepository $repository;
     private Migrate $migrate;
     private PDO $pdo;
@@ -16,11 +21,7 @@ class PoliticianRepositoryTest extends TestCase
     public function __construct()
     {
         parent::__construct();
-        $pdoStringBuilder = (new Builder())
-            ->setDbDns(getenv("DATABASE_DNS"))
-            ->setDbName(getenv("DATABASE_NAME"));
-        $this->pdo = new PDO($pdoStringBuilder->getPdoString(), getenv("DATABASE_USER"), getenv("DATABASE_PASSWORD"));
-        $this->migrate = new Migrate($this->pdo);
+        $this->db();
         $this->repository = new PoliticianRepository($this->pdo);
     }
 
