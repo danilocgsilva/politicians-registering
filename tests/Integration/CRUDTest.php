@@ -7,7 +7,7 @@ namespace Educacaopolitica\PoliticiansRegister\Tests\Integration;
 use PHPUnit\Framework\TestCase;
 use Educacaopolitica\PoliticiansRegister\{CRUD, PoliticianRepository, Politician};
 use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
-use Educacaopolitica\PoliticiansRegister\Migrations\Migrate;
+use Educacaopolitica\PoliticiansRegister\Migrations\{Migrate, UndoMigration};
 use PDO;
 
 class CRUDTest extends TestCase
@@ -20,6 +20,8 @@ class CRUDTest extends TestCase
 
     private Migrate $migrate;
 
+    private UndoMigration $undoMigration;
+
     private PoliticianRepository $politicianRepository;
 
     public function __construct()
@@ -28,16 +30,18 @@ class CRUDTest extends TestCase
         $this->db();
         $this->politicianRepository = new PoliticianRepository($this->pdo);
         $this->crud = new CRUD($this->pdo);
+        $this->migrate = new Migrate($this->pdo);
+        $this->undoMigration = new UndoMigration($this->pdo);
     }
 
     public function setUp(): void
     {
-        $this->migrate->migratePoliticiansTable();
+        $this->migrate->migrateTable('politicians');
     }
 
     public function tearDown(): void
     {
-        $this->migrate->undoPoliticiansTableMigrate();
+        $this->undoMigration->deMigrateTable('politicians');
     }
 
     public function testCreate()

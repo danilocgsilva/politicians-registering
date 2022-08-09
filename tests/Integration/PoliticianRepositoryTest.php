@@ -9,6 +9,7 @@ use Educacaopolitica\PoliticiansRegister\PoliticianRepository;
 use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
 use PDO;
 use Educacaopolitica\PoliticiansRegister\Migrations\Migrate;
+use Educacaopolitica\PoliticiansRegister\Migrations\UndoMigration;
 
 class PoliticianRepositoryTest extends TestCase
 {
@@ -16,6 +17,7 @@ class PoliticianRepositoryTest extends TestCase
     
     private PoliticianRepository $repository;
     private Migrate $migrate;
+    private UndoMigration $undoMigration;
     private PDO $pdo;
 
     public function __construct()
@@ -23,16 +25,18 @@ class PoliticianRepositoryTest extends TestCase
         parent::__construct();
         $this->db();
         $this->repository = new PoliticianRepository($this->pdo);
+        $this->migrate = new Migrate($this->pdo);
+        $this->undoMigration = new UndoMigration($this->pdo);
     }
 
     public function setUp(): void
     {
-        $this->migrate->migratePoliticiansTable();
+        $this->migrate->migrateTable('politicians');
     }
 
     public function tearDown(): void
     {
-        $this->migrate->undoPoliticiansTableMigrate();
+        $this->undoMigration->deMigrateTable('politicians');
     }
 
     public function testRepositoryCount()
