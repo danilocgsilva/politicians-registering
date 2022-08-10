@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace Educacaopolitica\PoliticiansRegister\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Educacaopolitica\PoliticiansRegister\{CRUD, PoliticianRepository, Politician};
+use Educacaopolitica\PoliticiansRegister\Politician;
+use Educacaopolitica\PoliticiansRegister\CRUD\PoliticianCrud;
+use Educacaopolitica\PoliticiansRegister\Repositories\PoliticianRepository;
 use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
 use Educacaopolitica\PoliticiansRegister\Migrations\{Migrate, UndoMigration};
 use PDO;
 
-class CRUDTest extends TestCase
+class PoliticianCrudTest extends TestCase
 {
     use DbTrait;
 
-    private CRUD $crud;
+    private PoliticianCrud $crud;
 
     private PDO $pdo;
 
@@ -29,7 +31,7 @@ class CRUDTest extends TestCase
         parent::__construct();
         $this->db();
         $this->politicianRepository = new PoliticianRepository($this->pdo);
-        $this->crud = new CRUD($this->pdo);
+        $this->crud = new PoliticianCrud($this->pdo);
         $this->migrate = new Migrate($this->pdo);
         $this->undoMigration = new UndoMigration($this->pdo);
     }

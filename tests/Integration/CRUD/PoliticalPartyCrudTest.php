@@ -1,0 +1,86 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Educacaopolitica\PoliticiansRegister\Tests\Integration;
+
+use PHPUnit\Framework\TestCase;
+// use Educacaopolitica\PoliticiansRegister\Politician;
+use Educacaopolitica\PoliticiansRegister\PoliticalParty;
+use Educacaopolitica\PoliticiansRegister\Repositories\PoliticalPartyRepository;
+use Educacaopolitica\PoliticiansRegister\CRUD\PoliticalPartyCrud;
+use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
+use Educacaopolitica\PoliticiansRegister\Migrations\{Migrate, UndoMigration};
+use PDO;
+
+class PoliticalPartyCrudTest extends TestCase
+{
+    use DbTrait;
+
+    private PoliticalPartyCrud $crud;
+
+    private PDO $pdo;
+
+    private Migrate $migrate;
+
+    private UndoMigration $undoMigration;
+
+    private PoliticalPartyRepository $politicalPartyRepository;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->db();
+        $this->politicalPartyRepository = new PoliticalPartyRepository($this->pdo);
+        $this->crud = new PoliticalPartyCrud($this->pdo);
+        $this->migrate = new Migrate($this->pdo);
+        $this->undoMigration = new UndoMigration($this->pdo);
+    }
+
+    public function setUp(): void
+    {
+        $this->migrate->migrateTable('political_parties');
+    }
+
+    public function tearDown(): void
+    {
+        $this->undoMigration->deMigrateTable('political_parties');
+    }
+
+    public function testCreate()
+    {
+        $this->assertSame(0, $this->politicalPartyRepository->count());
+        $this->createPoliticalParty("Repoblicans");
+        $this->assertSame(1, $this->politicalPartyRepository->count());
+    }
+
+    public function testRead()
+    {
+        $this->createPoliticalParty("Democrats");
+        $recoveredPoliticalParty = $this->crud->read(1);
+        $this->assertInstanceOf(PoliticalParty::class, $recoveredPoliticalParty);
+        $this->assertSame("Democrats", $recoveredPoliticalParty->getName());
+    }
+
+    public function testUpdate()
+    {
+        $this->createPoliticalParty("Xiitas");
+        $this->crud->update(1, "Sunita");
+        $recoveredPoliticalParty = $this->crud->read(1);
+        $this->assertSame("Sunita", $recoveredPoliticalParty->getName());
+    }
+
+    public function testDelete()
+    {
+        $this->createPoliticalParty("Partido do Novo Triunfo");
+        $this->crud->delete(1);
+        $this->assertSame(0, $this->politicalPartyRepository->count());
+    }
+
+    private function createPoliticalParty(string $name)
+    {
+        $newPoliticalParty = (new PoliticalParty())
+            ->setName($name);
+        $this->crud->create($newPoliticalParty);
+    }
+}

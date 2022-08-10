@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Educacaopolitica\PoliticiansRegister;
+namespace Educacaopolitica\PoliticiansRegister\Repositories;
 
 use PDO;
 

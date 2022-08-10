@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Educacaopolitica\PoliticiansRegister;
+namespace Educacaopolitica\PoliticiansRegister\CRUD;
 
 use PDO;
+use Educacaopolitica\PoliticiansRegister\Politician;
 
-class CRUD
+class PoliticianCrud
 {
     private CONST TABLE_NAME = "politicians";
     

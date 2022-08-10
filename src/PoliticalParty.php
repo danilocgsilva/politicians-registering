@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Educacaopolitica\PoliticiansRegister;
 
-class Politician
+class PoliticalParty
 {
     private int $id;
     private string $name;

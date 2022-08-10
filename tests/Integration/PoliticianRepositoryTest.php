@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Educacaopolitica\PoliticiansRegister\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-use Educacaopolitica\PoliticiansRegister\PoliticianRepository;
+use Educacaopolitica\PoliticiansRegister\Repositories\PoliticianRepository;
 use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
 use PDO;
 use Educacaopolitica\PoliticiansRegister\Migrations\Migrate;

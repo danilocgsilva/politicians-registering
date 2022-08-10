@@ -3,7 +3,8 @@
     "description": "Allow politicians registering in your application",
     "type": "library",
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "codedungeon/phpunit-result-printer": "^0.32.0"
     },
     "license": "BSD",
     "autoload": {
