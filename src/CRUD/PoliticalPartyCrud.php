@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Educacaopolitica\PoliticiansRegister\CRUD;
 
-use PDO;
+use Educacaopolitica\PoliticiansRegister\CRUD\Traits\CRUDTrait;
 use Educacaopolitica\PoliticiansRegister\PoliticalParty;
+use PDO;
 
 class PoliticalPartyCrud
 {
+    use CRUDTrait;
+
     private CONST TABLE_NAME = "political_parties";
 
     private PDO $pdo;
@@ -50,11 +53,4 @@ class PoliticalPartyCrud
             ]);
     }
 
-    public function delete(int $id)
-    {
-        $this->pdo
-            ->prepare(
-                sprintf("DELETE FROM %s WHERE id = ?;", self::TABLE_NAME)
-            )->execute([$id]);
-    }
 }

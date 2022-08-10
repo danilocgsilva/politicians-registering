@@ -11,7 +11,8 @@ class UndoMigration
 {
     private const TABLE_QUERIES = [
         'political_parties' => 'DROP TABLE `political_parties`;',
-        'politicians' => 'DROP TABLE `politicians`;'
+        'politicians' => 'DROP TABLE `politicians`;',
+        'photos' => 'DROP TABLE `photos`; DROP TABLE `photos_politicians`;'
     ];
 
     public function __construct(PDO $pdo)

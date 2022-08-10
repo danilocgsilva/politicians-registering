@@ -12,12 +12,9 @@ class Migrate
     private PDO $pdo;
 
     private const TABLE_QUERIES = [
-        'political_parties' => 'CREATE TABLE `political_parties` (
-            id INTEGER AUTO_INCREMENT, name VARCHAR(256), PRIMARY KEY (`id`)
-        )',
-        'politicians' => 'CREATE TABLE `politicians` (
-            id INTEGER AUTO_INCREMENT, name VARCHAR(256), PRIMARY KEY (`id`)
-        );'
+        'political_parties' => PoliticalPartiesMigration::class,
+        'politicians' => PoliticiansMigration::class,
+        'photos' => PhotosMigration::class,
     ];
 
     public function __construct(PDO $pdo)
@@ -30,7 +27,11 @@ class Migrate
         if (!array_key_exists($table, self::TABLE_QUERIES)) {
             throw new Exception("I don't know the provided table.");
         }
-        $resource = $this->pdo->prepare(self::TABLE_QUERIES[$table]);
-        $resource->execute();
+
+        $this->pdo->prepare(
+            (new (
+                self::TABLE_QUERIES[$table]
+            )())->getQueryCreation()
+        )->execute();
     }
 }
