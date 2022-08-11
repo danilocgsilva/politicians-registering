@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Educacaopolitica\PoliticiansRegister\Migrations;
+namespace Educacaopolitica\PoliticiansRegister\Migrations\EntitiesMigrations;
 
 interface IMigration
 {

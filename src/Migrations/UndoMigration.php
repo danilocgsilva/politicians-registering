@@ -12,7 +12,11 @@ class UndoMigration
     private const TABLE_QUERIES = [
         'political_parties' => 'DROP TABLE `political_parties`;',
         'politicians' => 'DROP TABLE `politicians`;',
-        'photos' => 'DROP TABLE `photos`; DROP TABLE `photos_politicians`;'
+        'photos' => 
+            'ALTER TABLE photos_politicians DROP FOREIGN KEY `politician_id_photos_politicians_politicians`;
+            ALTER TABLE photos_politicians DROP FOREIGN KEY `photo_id_photos_politicians_politicians`;
+            DROP TABLE `photos`; 
+            DROP TABLE `photos_politicians`;'
     ];
 
     public function __construct(PDO $pdo)

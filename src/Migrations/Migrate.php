@@ -6,6 +6,11 @@ namespace Educacaopolitica\PoliticiansRegister\Migrations;
 
 use PDO;
 use Exception;
+use Educacaopolitica\PoliticiansRegister\Migrations\EntitiesMigrations\{
+    PoliticiansMigration,
+    PoliticalPartiesMigration,
+    PhotosMigration
+};
 
 class Migrate
 {    
