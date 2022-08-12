@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Educacaopolitica\PoliticiansRegister\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
-// use Educacaopolitica\PoliticiansRegister\Politician;
 use Educacaopolitica\PoliticiansRegister\PoliticalParty;
 use Educacaopolitica\PoliticiansRegister\Repositories\PoliticalPartyRepository;
 use Educacaopolitica\PoliticiansRegister\CRUD\PoliticalPartyCrud;
@@ -13,18 +12,14 @@ use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
 use Educacaopolitica\PoliticiansRegister\Migrations\{Migrate, UndoMigration};
 use PDO;
 
-class PoliticalPartyCrudTest extends TestCase
+class PoliticalPartyCrudTest extends TestCase implements ICrudTest
 {
     use DbTrait;
 
     private PoliticalPartyCrud $crud;
-
     private PDO $pdo;
-
     private Migrate $migrate;
-
     private UndoMigration $undoMigration;
-
     private PoliticalPartyRepository $politicalPartyRepository;
 
     public function __construct()

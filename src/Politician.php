@@ -8,6 +8,7 @@ class Politician
 {
     private int $id;
     private string $name;
+    private array $photos = [];
 
     public function setName(string $name): self
     {
@@ -29,5 +30,16 @@ class Politician
     public function getId(): int
     {
         return $this->id;
+    }
+
+    public function addPhoto(string $photoPath): self
+    {
+        $this->photos[] = $photoPath;
+        return $this;
+    }
+
+    public function getPhotos(): array
+    {
+        return $this->photos;
     }
 }

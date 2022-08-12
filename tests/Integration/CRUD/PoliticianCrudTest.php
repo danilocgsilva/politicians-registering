@@ -12,18 +12,14 @@ use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
 use Educacaopolitica\PoliticiansRegister\Migrations\{Migrate, UndoMigration};
 use PDO;
 
-class PoliticianCrudTest extends TestCase
+class PoliticianCrudTest extends TestCase implements ICrudTest
 {
     use DbTrait;
 
     private PoliticianCrud $crud;
-
     private PDO $pdo;
-
     private Migrate $migrate;
-
     private UndoMigration $undoMigration;
-
     private PoliticianRepository $politicianRepository;
 
     public function __construct()

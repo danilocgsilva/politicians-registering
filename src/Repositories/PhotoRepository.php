@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Educacaopolitica\PoliticiansRegister\Repositories;
 
-use Educacaopolitica\PoliticiansRegister\CRUD\PoliticalPartyCrud;
+use Educacaopolitica\PoliticiansRegister\CRUD\PhotoCrud;
 use PDO;
-use Educacaopolitica\PoliticiansRegister\PoliticalParty;
 
-class PoliticalPartyRepository implements IRepository
+class PhotoRepository implements IRepository
 {
     private PDO $pdo;
 
@@ -19,16 +18,16 @@ class PoliticalPartyRepository implements IRepository
 
     public function count(): int
     {
-        $queryCount = "SELECT COUNT(id) as count FROM political_parties;";
+        $queryCount = "SELECT COUNT(id) as count FROM photos;";
         $resource = $this->pdo->prepare($queryCount);
         $resource->execute();
         $result = $resource->fetch();
         return $result["count"];
     }
 
-    public function save(PoliticalParty $politicalParty): void
+    public function save(Photo $photo): void
     {
-        $crud = new PoliticalPartyCrud($this->pdo);
-        $crud->create($politicalParty);
+        $crud = new PhotoCrud($this->pdo);
+        $crud->create($)
     }
 }
