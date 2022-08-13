@@ -28,6 +28,6 @@ class PhotoRepository implements IRepository
     public function save(Photo $photo): void
     {
         $crud = new PhotoCrud($this->pdo);
-        $crud->create($)
+        $crud->create($photo);
     }
 }

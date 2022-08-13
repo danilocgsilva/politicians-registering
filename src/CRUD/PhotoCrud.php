@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Educacaopolitica\PoliticiansRegister\CRUD;
 
 use PDO;
-use Educacaopolitica\PoliticiansRegister\Politician;
+use Educacaopolitica\PoliticiansRegister\Photo;
 use Educacaopolitica\PoliticiansRegister\CRUD\Traits\CRUDTrait;
 
 class PhotoCrud
 {
     use CRUDTrait;
 
-    private CONST TABLE_NAME = "politicians";
+    private CONST TABLE_NAME = "photos";
     
     private PDO $pdo;
 
@@ -21,24 +21,24 @@ class PhotoCrud
         $this->pdo = $pdo;
     }
 
-    public function create(Politician $politician)
+    public function create(Photo $photo)
     {
         $this->pdo
             ->prepare(
-                sprintf("INSERT INTO %s (name) VALUES (:name);", self::TABLE_NAME)
+                sprintf("INSERT INTO %s (path) VALUES (:path);", self::TABLE_NAME)
             )->execute([
-                ":name" => $politician->getName()
+                ":path" => $photo->getPhotoPath()
             ]);
     }
 
-    public function read(int $id): Politician
+    public function read(int $id): Photo
     {
-        $searchQuery = sprintf("SELECT name FROM `%s` WHERE id = ?;", self::TABLE_NAME);
+        $searchQuery = sprintf("SELECT path FROM `%s` WHERE id = ?;", self::TABLE_NAME);
         $resource = $this->pdo->prepare($searchQuery);
         $resource->execute([$id]);
         $result = $resource->fetch();
-        return (new Politician())
-            ->setName($result["name"])
+        return (new Photo())
+            ->setPhotoPath($result["path"])
             ->setId($id);
     }
 
