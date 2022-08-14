@@ -42,13 +42,13 @@ class PhotoCrud
             ->setId($id);
     }
 
-    public function update(int $id, string $name)
+    public function update(int $id, string $photoPath)
     {
         $this->pdo
             ->prepare(
-                sprintf("UPDATE %s SET name = ? WHERE id = ?;", self::TABLE_NAME)
+                sprintf("UPDATE %s SET path = ? WHERE id = ?;", self::TABLE_NAME)
             )->execute([
-                $name,
+                $photoPath,
                 $id
             ]);
     }

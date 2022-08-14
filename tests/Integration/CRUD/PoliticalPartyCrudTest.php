@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Educacaopolitica\PoliticiansRegister\Tests\Integration;
 
-use PHPUnit\Framework\TestCase;
-use Educacaopolitica\PoliticiansRegister\PoliticalParty;
-use Educacaopolitica\PoliticiansRegister\Repositories\PoliticalPartyRepository;
 use Educacaopolitica\PoliticiansRegister\CRUD\PoliticalPartyCrud;
 use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
 use Educacaopolitica\PoliticiansRegister\Migrations\{Migrate, UndoMigration};
+use Educacaopolitica\PoliticiansRegister\Repositories\PoliticalPartyRepository;
+use Educacaopolitica\PoliticiansRegister\PoliticalParty;
+use PHPUnit\Framework\TestCase;
 use PDO;
 
 class PoliticalPartyCrudTest extends TestCase implements ICrudTest

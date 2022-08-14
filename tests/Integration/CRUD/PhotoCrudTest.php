@@ -27,21 +27,44 @@ class PhotoCrudTest extends TestCase implements ICrudTest
         parent::__construct();
         $this->db();
         $this->photoRepository = new PhotoRepository($this->pdo);
+        $this->photoCrud = new PhotoCrud($this->pdo);
+        $this->migrate = new Migrate($this->pdo);
+        $this->undoMigration = new UndoMigration($this->pdo);
+    }
+
+    public function setUp(): void
+    {
+        $this->migrate->migrateTable('politicians');
+        $this->migrate->migrateTable('photos');
+    }
+
+    public function tearDown(): void
+    {
+        $this->undoMigration->deMigrateTable('photos');
+        $this->undoMigration->deMigrateTable('politicians');
     }
 
     public function testRead()
     {
-        $this->assertTrue(false);
+        $this->createPhoto("/var/www/html/public/photos/Hillary_Clinton.jpg");
+        $recoveredPhoto = $this->photoCrud->read(1);
+        $this->assertInstanceOf(Photo::class, $recoveredPhoto);
+        $this->assertSame("/var/www/html/public/photos/Hillary_Clinton.jpg", $recoveredPhoto->getPhotoPath());
     }
 
     public function testUpdate()
     {
-        $this->assertTrue(false);
+        $this->createPhoto("/var/www/html/public/photos/politicians/BushFather.jpg");
+        $this->photoCrud->update(1, "/var/www/html/public/photos/politicians/BushSon.jpg");
+        $recoveredPhoto = $this->photoCrud->read(1);
+        $this->assertSame("/var/www/html/public/photos/politicians/BushSon.jpg", $recoveredPhoto->getPhotoPath());
     }
 
     public function testDelete()
     {
-        $this->assertTrue(false);
+        $this->createPhoto("/var/www/html/public/photos/Obama01.png");
+        $this->photoCrud->delete(1);
+        $this->assertSame(0, $this->photoRepository->count());
     }
 
     public function testCreate()
