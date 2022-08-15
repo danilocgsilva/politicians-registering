@@ -10,3 +10,4 @@ $migrate = new Migrate($pdo);
 $migrate->migrateTable('politicians');
 $migrate->migrateTable('political_parties');
 $migrate->migrateTable('photos');
+$migrate->migrateTable('political_party_politician_pivot');

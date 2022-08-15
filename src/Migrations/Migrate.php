@@ -9,7 +9,8 @@ use Exception;
 use Educacaopolitica\PoliticiansRegister\Migrations\EntitiesMigrations\{
     PoliticiansMigration,
     PoliticalPartiesMigration,
-    PhotosMigration
+    PhotosMigration,
+    PoliticalPartyPoliticianPivot
 };
 
 class Migrate
@@ -20,6 +21,7 @@ class Migrate
         'political_parties' => PoliticalPartiesMigration::class,
         'politicians' => PoliticiansMigration::class,
         'photos' => PhotosMigration::class,
+        'political_party_politician_pivot' => PoliticalPartyPoliticianPivot::class,
     ];
 
     public function __construct(PDO $pdo)
