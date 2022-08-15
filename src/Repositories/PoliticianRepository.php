@@ -11,10 +11,12 @@ use Educacaopolitica\PoliticiansRegister\Politician;
 class PoliticianRepository implements IRepository
 {
     private PDO $pdo;
+    private PoliticianCrud $politicanCrud;
 
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
+        $this->politicanCrud = new PoliticianCrud($this->pdo);
     }
 
     public function count(): int
@@ -28,7 +30,11 @@ class PoliticianRepository implements IRepository
 
     public function save(Politician $politician): void
     {
-        $crud = new PoliticianCrud($this->pdo);
-        $crud->create($politician);
+        $this->politicanCrud->create($politician);
+    }
+
+    public function read(int $number): Politician
+    {
+        return $this->politicanCrud->read($number);
     }
 }

@@ -35,10 +35,12 @@ class PoliticianCrudTest extends TestCase implements ICrudTest
     public function setUp(): void
     {
         $this->migrate->migrateTable('politicians');
+        $this->migrate->migrateTable('photos');
     }
 
     public function tearDown(): void
     {
+        $this->undoMigration->deMigrateTable('photos');
         $this->undoMigration->deMigrateTable('politicians');
     }
 

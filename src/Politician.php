@@ -42,4 +42,9 @@ class Politician
     {
         return $this->photos;
     }
+
+    public function countPhotos(): int
+    {
+        return count($this->photos);
+    }
 }

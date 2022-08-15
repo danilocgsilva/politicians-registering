@@ -32,10 +32,12 @@ class PoliticianRepositoryTest extends TestCase
     public function setUp(): void
     {
         $this->migrate->migrateTable('politicians');
+        $this->migrate->migrateTable('photos');
     }
 
     public function tearDown(): void
     {
+        $this->undoMigration->deMigrateTable('photos');
         $this->undoMigration->deMigrateTable('politicians');
     }
 
@@ -44,18 +46,33 @@ class PoliticianRepositoryTest extends TestCase
         $this->assertSame(0, $this->repository->count());
     }
 
-    public function testDbWithPhotos()
+    public function testWithPhotos()
     {
-        $politicianWithPhoto = new Politician();
+        $politicianWithPhoto = $this->setNewPolitician(
+            "José Antonio Kast",
+            [
+                "/var/www/html/public/images/JoseAntonioKast01.png",
+                "/var/www/html/public/images/JoseAntonioKast02.png"
+            ]
+        );
 
-        $name = "José Antonio Kast";
-        
-        $photoPath1 = "/var/www/html/public/images/JoseAntonioKast01.png";
-        $photoPath2 = "/var/www/html/public/images/JoseAntonioKast02.png";
+        $this->assertSame(2, $politicianWithPhoto->countPhotos());
+    }
 
-        $politicianWithPhoto->setName($name)
-            ->addPhoto($photoPath1)
-            ->addPhoto($photoPath2);
+    public function testGetPhotosFromDb()
+    {
+        $politicianWithFotosInDb = $this->setNewPolitician(
+            "Angela Merkel",
+            [
+                "/var/www/html/public/photos/german/angela_merkel01.png",
+                "/var/www/html/public/photos/german/angela_merkel02.png",
+                "/var/www/html/public/photos/german/angelaMerkel3.png"
+            ]
+        );
+
+        $this->repository->save($politicianWithFotosInDb);
+        $recovered = $this->repository->read(1);
+        $this->assertCount(3, $recovered->getPhotos());
     }
 
     public function testSave()
@@ -64,5 +81,19 @@ class PoliticianRepositoryTest extends TestCase
         $politician->setName("Sebastián Piñera");
         $this->repository->save($politician);
         $this->assertSame(1, $this->repository->count());
+    }
+
+    private function setNewPolitician(string $name, array $photos): Politician
+    {
+        $politicianWithFotos = new Politician();
+
+        $politicianWithFotos->setName($name);
+
+        array_map(function($photoPath) use ($politicianWithFotos) {
+                $politicianWithFotos->addPhoto($photoPath);
+            }, $photos
+        );
+
+        return $politicianWithFotos;
     }
 }

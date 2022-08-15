@@ -29,17 +29,32 @@ class PoliticianCrud
             )->execute([
                 ":name" => $politician->getName()
             ]);
+        $this->savePhotosToDb($this->pdo->lastInsertId(), $politician->getPhotos());
     }
 
     public function read(int $id): Politician
     {
-        $searchQuery = sprintf("SELECT name FROM `%s` WHERE id = ?;", self::TABLE_NAME);
+        $searchQuery = sprintf(
+            "SELECT
+                p.name as politician_name,
+                ph.path as photo_path
+            FROM `%s` p
+            LEFT JOIN photos_politicians pp ON pp.politician_id = p.id
+            LEFT JOIN photos ph ON ph.id = pp.photo_id
+            WHERE p.id = ? ;"
+            , self::TABLE_NAME
+        );
         $resource = $this->pdo->prepare($searchQuery);
         $resource->execute([$id]);
-        $result = $resource->fetch();
-        return (new Politician())
-            ->setName($result["name"])
-            ->setId($id);
+
+        $recoveredPolitician = new Politician();
+        while ($lineResult = $resource->fetch()) {
+            $recoveredPolitician->setName($lineResult["politician_name"]);
+            if ($lineResult["photo_path"] !== null) {
+                $recoveredPolitician->addPhoto($lineResult["photo_path"]);
+            }
+        }
+        return $recoveredPolitician;
     }
 
     public function update(int $id, string $name)
@@ -53,4 +68,28 @@ class PoliticianCrud
             ]);
     }
 
+    private function savePhotosToDb($politicianId, array $photos)
+    {
+        if (count($photos) > 0) {
+
+            $insertRow = "INSERT INTO photos (path) VALUES (?)";
+            $photosIds = [];
+            foreach ($photos as $photo) {
+                $this->pdo->prepare($insertRow)->execute([$photo]);
+                $photosIds[] = $this->pdo->lastInsertId();
+            }
+
+            $valuesToInsertInPivot = "";
+            foreach ($photosIds as $photoId) {
+                $valuesToInsertInPivot .= sprintf("(%s,%s),", $politicianId, $photoId);
+            }
+            $valuesToInsertInPivot = rtrim($valuesToInsertInPivot, ",");
+            $this->pdo->prepare(
+                sprintf(
+                    "INSERT INTO photos_politicians (politician_id, photo_id) VALUES %s;", 
+                    $valuesToInsertInPivot
+                )
+            )->execute();
+        }
+    }
 }
