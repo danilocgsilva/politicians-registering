@@ -8,15 +8,15 @@ use PHPUnit\Framework\TestCase;
 use Educacaopolitica\PoliticiansRegister\Politician;
 use Educacaopolitica\PoliticiansRegister\CRUD\PoliticianCrud;
 use Educacaopolitica\PoliticiansRegister\Repositories\PoliticianRepository;
-use Educacaopolitica\PoliticiansRegister\Tests\Traits\DbTrait;
+use Educacaopolitica\PoliticiansRegister\Tests\Traits\{DbTrait, CreatorDBTrait};
 use Educacaopolitica\PoliticiansRegister\Migrations\{Migrate, UndoMigration};
 use PDO;
 
 class PoliticianCrudTest extends TestCase implements ICrudTest
 {
-    use DbTrait;
+    use DbTrait, CreatorDBTrait;
 
-    private PoliticianCrud $crud;
+    private PoliticianCrud $politicianCrud;
     private PDO $pdo;
     private Migrate $migrate;
     private UndoMigration $undoMigration;
@@ -27,7 +27,7 @@ class PoliticianCrudTest extends TestCase implements ICrudTest
         parent::__construct();
         $this->db();
         $this->politicianRepository = new PoliticianRepository($this->pdo);
-        $this->crud = new PoliticianCrud($this->pdo);
+        $this->politicianCrud = new PoliticianCrud($this->pdo);
         $this->migrate = new Migrate($this->pdo);
         $this->undoMigration = new UndoMigration($this->pdo);
     }
@@ -54,7 +54,7 @@ class PoliticianCrudTest extends TestCase implements ICrudTest
     public function testRead()
     {
         $this->createPoliticianInDb("Michael Douglas");
-        $recoveredPolitician = $this->crud->read(1);
+        $recoveredPolitician = $this->politicianCrud->read(1);
         $this->assertInstanceOf(Politician::class, $recoveredPolitician);
         $this->assertSame("Michael Douglas", $recoveredPolitician->getName());
     }
@@ -62,22 +62,15 @@ class PoliticianCrudTest extends TestCase implements ICrudTest
     public function testUpdate()
     {
         $this->createPoliticianInDb("Michael Douglas");
-        $this->crud->update(1, "Donald Trump");
-        $recoveredPolitician = $this->crud->read(1);
+        $this->politicianCrud->update(1, "Donald Trump");
+        $recoveredPolitician = $this->politicianCrud->read(1);
         $this->assertSame("Donald Trump", $recoveredPolitician->getName());
     }
 
     public function testDelete()
     {
         $this->createPoliticianInDb("Michael Douglas");
-        $this->crud->delete(1);
+        $this->politicianCrud->delete(1);
         $this->assertSame(0, $this->politicianRepository->count());
-    }
-
-    private function createPoliticianInDb(string $name)
-    {
-        $newPolitician = (new Politician())
-            ->setName($name);
-        $this->crud->create($newPolitician);
     }
 }

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Educacaopolitica\PoliticiansRegister;
 
+use PDO;
+
 class Politician
 {
     private int $id;
     private string $name;
     private array $photos = [];
+    private array $politicalParties = [];
 
     public function setName(string $name): self
     {
@@ -46,5 +49,29 @@ class Politician
     public function countPhotos(): int
     {
         return count($this->photos);
+    }
+
+    public function loadPoliticalParties(PDO $pdo): void
+    {
+        $querySelect = "SELECT
+            ppp.politician_id,
+            ppp.political_party_id,
+            pop.name as popname
+        FROM political_party_politician ppp
+        LEFT JOIN political_parties pop ON pop.id = ppp.political_party_id
+        WHERE ppp.politician_id = ?;";
+
+        $resource = $pdo->prepare($querySelect)->execute([$this->getId()]);
+
+        while ($result = $resource->fetch()) {
+            $politicalParty = (new PoliticalParty())
+                ->setName($result["popname"]);
+            $this->politicalParties[] = $politicalParty;
+        }
+    }
+
+    public function getPoliticalParties(): array
+    {
+        return $this->politicalParties;
     }
 }

@@ -32,12 +32,10 @@ class PoliticianRepositoryTest extends TestCase
     public function setUp(): void
     {
         $this->migrate->migrateTable('politicians');
-        $this->migrate->migrateTable('photos');
     }
 
     public function tearDown(): void
     {
-        $this->undoMigration->deMigrateTable('photos');
         $this->undoMigration->deMigrateTable('politicians');
     }
 
@@ -61,6 +59,8 @@ class PoliticianRepositoryTest extends TestCase
 
     public function testGetPhotosFromDb()
     {
+        $this->migrate->migrateTable('photos');
+
         $politicianWithFotosInDb = $this->setNewPolitician(
             "Angela Merkel",
             [
@@ -73,6 +73,8 @@ class PoliticianRepositoryTest extends TestCase
         $this->repository->save($politicianWithFotosInDb);
         $recovered = $this->repository->read(1);
         $this->assertCount(3, $recovered->getPhotos());
+
+        $this->undoMigration->deMigrateTable('photos');
     }
 
     public function testSave()
