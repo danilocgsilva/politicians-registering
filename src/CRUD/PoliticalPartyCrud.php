@@ -21,7 +21,7 @@ class PoliticalPartyCrud
         $this->pdo = $pdo;
     }
 
-    public function create(PoliticalParty $politicalParty)
+    public function create(PoliticalParty $politicalParty): void
     {
         $this->pdo
             ->prepare(
@@ -29,6 +29,8 @@ class PoliticalPartyCrud
             )->execute([
                 ":name" => $politicalParty->getName()
             ]);
+
+        $politicalParty->setId((int) $this->pdo->lastInsertId());
     }
 
     public function read(int $id): PoliticalParty

@@ -51,6 +51,14 @@ class PoliticianCrudTest extends TestCase implements ICrudTest
         $this->assertSame(1, $this->politicianRepository->count());
     }
 
+    public function testCreateId()
+    {
+        $newPolitician = (new Politician())
+            ->setName("Partido Conservador da Nicarágua");
+        $this->politicianCrud->create($newPolitician);
+        $this->assertSame(1, $newPolitician->getId());
+    }
+
     public function testRead()
     {
         $this->createPoliticianInDb("Michael Douglas");

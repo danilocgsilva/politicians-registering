@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Educacaopolitica\Helpers;
+namespace Educacaopolitica\PoliticiansRegister\Helpers;
 
 use Educacaopolitica\PoliticiansRegister\{Politician, PoliticalParty};
 use PDO;
@@ -20,7 +20,7 @@ class PoliticalPartyHelper
     public function assignPoliticalParty(
         Politician $politician, 
         PoliticalParty $politicalParty,
-        ?DateTime $dateTime
+        DateTime $dateTime = null
     ) {
         if ($dateTime) {
             $queryInsert = "INSERT INTO `political_party_politician` (
@@ -28,7 +28,11 @@ class PoliticalPartyHelper
             ) values (?,?,?);";
             $this->pdo
                 ->prepare($queryInsert)
-                ->execute([$politician->getId(), $politicalParty->getId(), $dateTime]);
+                ->execute([
+                    $politician->getId(), 
+                    $politicalParty->getId(),
+                    $dateTime->format('Y-m-d h:i:s')
+                ]);
         } else {
             $queryInsert = "INSERT INTO `political_party_politician` (
                 politician_id, political_party_id

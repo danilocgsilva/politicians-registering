@@ -61,7 +61,8 @@ class Politician
         LEFT JOIN political_parties pop ON pop.id = ppp.political_party_id
         WHERE ppp.politician_id = ?;";
 
-        $resource = $pdo->prepare($querySelect)->execute([$this->getId()]);
+        $resource = $pdo->prepare($querySelect);
+        $resource->execute([$this->getId()]);
 
         while ($result = $resource->fetch()) {
             $politicalParty = (new PoliticalParty())
@@ -70,7 +71,7 @@ class Politician
         }
     }
 
-    public function getPoliticalParties(): array
+    public function getPoliticalPartiesHistory(): array
     {
         return $this->politicalParties;
     }

@@ -14,6 +14,7 @@ trait CreatorDBTrait
         $newPolitician = (new Politician())
             ->setName($name);
         $this->politicianCrud->create($newPolitician);
+        return $newPolitician;
     }
 
     private function createPoliticalPartyInDb(string $name)
@@ -21,5 +22,6 @@ trait CreatorDBTrait
         $newPoliticalParty = (new PoliticalParty())
             ->setName($name);
         $this->politicalPartyCrud->create($newPoliticalParty);
+        return $newPoliticalParty;
     }
 }

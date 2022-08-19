@@ -49,6 +49,14 @@ class PoliticalPartyCrudTest extends TestCase implements ICrudTest
         $this->assertSame(1, $this->politicalPartyRepository->count());
     }
 
+    public function testCreateId()
+    {
+        $newPoliticalParty = (new PoliticalParty())
+            ->setName("Partido Conservador Colombian");
+        $this->crud->create($newPoliticalParty);
+        $this->assertSame(1, $newPoliticalParty->getId());
+    }
+
     public function testRead()
     {
         $this->createPoliticalParty("Democrats");
