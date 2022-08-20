@@ -51,24 +51,10 @@ class Politician
         return count($this->photos);
     }
 
-    public function loadPoliticalParties(PDO $pdo): void
+    public function addPoliticalParty(PoliticalParty $politicalParty): self
     {
-        $querySelect = "SELECT
-            ppp.politician_id,
-            ppp.political_party_id,
-            pop.name as popname
-        FROM political_party_politician ppp
-        LEFT JOIN political_parties pop ON pop.id = ppp.political_party_id
-        WHERE ppp.politician_id = ?;";
-
-        $resource = $pdo->prepare($querySelect);
-        $resource->execute([$this->getId()]);
-
-        while ($result = $resource->fetch()) {
-            $politicalParty = (new PoliticalParty())
-                ->setName($result["popname"]);
-            $this->politicalParties[] = $politicalParty;
-        }
+        $this->politicalParties[] = $politicalParty;
+        return $this;
     }
 
     public function getPoliticalPartiesHistory(): array

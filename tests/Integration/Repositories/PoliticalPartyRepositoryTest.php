@@ -2,34 +2,38 @@
 
 declare(strict_types=1);
 
-namespace Educacaopolitica\PoliticiansRegister\Tests\Integration;
+namespace Educacaopolitica\PoliticiansRegister\Tests\Integration\Repositories;
 
-use Educacaopolitica\PoliticiansRegister\CRUD\{PoliticianCrud, PoliticalPartyCrud};
-use Educacaopolitica\PoliticiansRegister\Helpers\PoliticalPartyHelper;
-use Educacaopolitica\PoliticiansRegister\Tests\Traits\{DbTrait, CreatorDBTrait};
-use Educacaopolitica\PoliticiansRegister\Migrations\{Migrate, UndoMigration};
-use PDO;
+use Educacaopolitica\PoliticiansRegister\Migrations\Migrate;
+use Educacaopolitica\PoliticiansRegister\Migrations\UndoMigration;
+use Educacaopolitica\PoliticiansRegister\Repositories\PoliticalPartyRepository;
 use PHPUnit\Framework\TestCase;
+use Educacaopolitica\PoliticiansRegister\Tests\Traits\{DbTrait, CreatorDBTrait};
+use PDO;
 use DateTime;
+use Educacaopolitica\PoliticiansRegister\CRUD\PoliticalPartyCrud;
+use Educacaopolitica\PoliticiansRegister\CRUD\PoliticianCrud;
+use Educacaopolitica\PoliticiansRegister\Repositories\PoliticianRepository;
 
-class PoliticalPartyHelperTest extends TestCase
+class PoliticalPartyRepositoryTest extends TestCase
 {
     use DbTrait, CreatorDBTrait;
-    
+
     private Migrate $migrate;
-    private UndoMigration $undoMigration;
     private PDO $pdo;
-    private PoliticalPartyCrud $politicalPartyCrud;
+    private PoliticalPartyRepository $politicalPartyRepository;
+    private UndoMigration $undoMigration;
     private PoliticianCrud $politicianCrud;
-    
+    private PoliticalPartyCrud $politicalPartyCrud;
+
     public function __construct()
     {
         parent::__construct();
         $this->db();
+        $this->politicalPartyRepository = new PoliticalPartyRepository($this->pdo);
+        $this->undoMigration = new UndoMigration($this->pdo);
         $this->politicianCrud = new PoliticianCrud($this->pdo);
         $this->politicalPartyCrud = new PoliticalPartyCrud($this->pdo);
-        $this->migrate = new Migrate($this->pdo);
-        $this->undoMigration = new UndoMigration($this->pdo);
     }
 
     public function setUp(): void
@@ -37,7 +41,6 @@ class PoliticalPartyHelperTest extends TestCase
         $this->migrate->migrateTable('politicians');
         $this->migrate->migrateTable('political_parties');
         $this->migrate->migrateTable('political_party_politician_pivot');
-
     }
 
     public function tearDown(): void
@@ -46,18 +49,18 @@ class PoliticalPartyHelperTest extends TestCase
         $this->undoMigration->deMigrateTable('political_parties');
         $this->undoMigration->deMigrateTable('politicians');
     }
-    
-    public function testAssignPoliticalPartyToPolitician()
+
+    public function testAssignPoliticalParty()
     {
         $politician = $this->createPoliticianInDb("Guilherme Boulos");
         $politicalParty = $this->createPoliticalPartyInDb("PCO");
-        $politicalPartyHelper = new PoliticalPartyHelper($this->pdo);
-        $politicalPartyHelper->assignPoliticalParty(
+        $this->politicalPartyRepository->assignPoliticalParty(
             $politician, 
             $politicalParty,
             DateTime::createFromFormat('j-M-Y', '15-Feb-2009')
         );
-        $politician->loadPoliticalParties($this->pdo);
+        $politicianRepository = new PoliticianRepository($this->pdo);
+        $politicianRepository->loadPoliticalParties($politician);
         $this->assertCount(1, $politician->getPoliticalPartiesHistory());
     }
 }

@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Educacaopolitica\PoliticiansRegister\Repositories;
 
 use Educacaopolitica\PoliticiansRegister\CRUD\PoliticalPartyCrud;
+use Educacaopolitica\PoliticiansRegister\{PoliticalParty, Politician};
 use PDO;
-use Educacaopolitica\PoliticiansRegister\PoliticalParty;
+use DateTime;
 
 class PoliticalPartyRepository implements IRepository
 {
@@ -30,5 +31,31 @@ class PoliticalPartyRepository implements IRepository
     {
         $crud = new PoliticalPartyCrud($this->pdo);
         $crud->create($politicalParty);
+    }
+
+    public function assignPoliticalParty(
+        Politician $politician, 
+        PoliticalParty $politicalParty,
+        DateTime $dateTime = null
+    ) {
+        if ($dateTime) {
+            $queryInsert = "INSERT INTO `political_party_politician` (
+                politician_id, political_party_id, since_from
+            ) values (?,?,?);";
+            $this->pdo
+                ->prepare($queryInsert)
+                ->execute([
+                    $politician->getId(), 
+                    $politicalParty->getId(),
+                    $dateTime->format('Y-m-d h:i:s')
+                ]);
+        } else {
+            $queryInsert = "INSERT INTO `political_party_politician` (
+                politician_id, political_party_id
+            ) values (?,?);";
+            $this->pdo
+                ->prepare($queryInsert)
+                ->execute([$politician->getId(), $politicalParty->getId()]);
+        }
     }
 }

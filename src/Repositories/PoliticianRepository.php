@@ -6,7 +6,7 @@ namespace Educacaopolitica\PoliticiansRegister\Repositories;
 
 use PDO;
 use Educacaopolitica\PoliticiansRegister\CRUD\PoliticianCrud;
-use Educacaopolitica\PoliticiansRegister\Politician;
+use Educacaopolitica\PoliticiansRegister\{Politician, PoliticalParty};
 
 class PoliticianRepository implements IRepository
 {
@@ -36,5 +36,25 @@ class PoliticianRepository implements IRepository
     public function read(int $number): Politician
     {
         return $this->politicanCrud->read($number);
+    }
+
+    public function loadPoliticalParties(Politician $politician): void
+    {
+        $querySelect = "SELECT
+            ppp.politician_id,
+            ppp.political_party_id,
+            pop.name as popname
+        FROM political_party_politician ppp
+        LEFT JOIN political_parties pop ON pop.id = ppp.political_party_id
+        WHERE ppp.politician_id = ?;";
+
+        $resource = $this->pdo->prepare($querySelect);
+        $resource->execute([$politician->getId()]);
+
+        while ($result = $resource->fetch()) {
+            $politicalParty = (new PoliticalParty())
+                ->setName($result["popname"]);
+            $politician->addPoliticalParty($politicalParty);
+        }
     }
 }

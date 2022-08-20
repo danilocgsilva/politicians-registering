@@ -32,7 +32,7 @@ class Migrate
     public function migrateTable(string $table): void
     {
         if (!array_key_exists($table, self::TABLE_QUERIES)) {
-            throw new Exception("I don't know the provided table.");
+            throw new Exception("Migration error: I don't know the provided table " . $table . ".");
         }
 
         $this->pdo->prepare(

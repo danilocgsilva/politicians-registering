@@ -25,7 +25,6 @@ class PoliticianRepositoryTest extends TestCase
         parent::__construct();
         $this->db();
         $this->repository = new PoliticianRepository($this->pdo);
-        $this->migrate = new Migrate($this->pdo);
         $this->undoMigration = new UndoMigration($this->pdo);
     }
 
