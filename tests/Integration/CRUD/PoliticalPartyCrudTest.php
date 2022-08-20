@@ -34,25 +34,27 @@ class PoliticalPartyCrudTest extends TestCase implements ICrudTest
 
     public function setUp(): void
     {
+        $this->migrate->migrateTable('politicians');
         $this->migrate->migrateTable('political_parties');
     }
 
     public function tearDown(): void
     {
         $this->undoMigration->deMigrateTable('political_parties');
+        $this->undoMigration->deMigrateTable('politicians');
     }
 
     public function testCreate()
     {
         $this->assertSame(0, $this->politicalPartyRepository->count());
-        $this->createPoliticalParty("Repoblicans");
+        $this->createPoliticalParty("Republicans");
         $this->assertSame(1, $this->politicalPartyRepository->count());
     }
 
     public function testCreateId()
     {
         $newPoliticalParty = (new PoliticalParty())
-            ->setName("Partido Conservador Colombian");
+            ->setName("Partido Conservador Colombiano");
         $this->crud->create($newPoliticalParty);
         $this->assertSame(1, $newPoliticalParty->getId());
     }
