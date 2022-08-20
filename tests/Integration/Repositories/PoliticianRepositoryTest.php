@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Educacaopolitica\PoliticiansRegister\Tests\Integration;
+namespace Educacaopolitica\PoliticiansRegister\Tests\Integration\Repositories;
 
 use Educacaopolitica\PoliticiansRegister\Repositories\PoliticianRepository;
 use Educacaopolitica\PoliticiansRegister\Migrations\{Migrate, UndoMigration};
