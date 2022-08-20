@@ -10,8 +10,13 @@ use PDO;
 class UndoMigration
 {
     private const TABLE_QUERIES = [
-        'political_parties' => 'DROP TABLE `political_parties`;',
+
+        'political_parties' => 'ALTER TABLE `politicians`
+            DROP FOREIGN KEY `current_political_party_id`; 
+            DROP TABLE `political_parties`;',
+
         'politicians' => 'DROP TABLE `politicians`;',
+
         'photos' => 
             'ALTER TABLE photos_politicians 
                 DROP FOREIGN KEY `politician_id_photos_politicians_politicians`;
@@ -19,6 +24,7 @@ class UndoMigration
                 DROP FOREIGN KEY `photo_id_photos_politicians_politicians`;
             DROP TABLE `photos`; 
             DROP TABLE `photos_politicians`;',
+
         'political_party_politician_pivot' => 
             'ALTER TABLE `political_party_politician`
                 DROP FOREIGN KEY `politician_id_politicians`;
